@@ -61,8 +61,17 @@
   </div>
 
   <div class="layui-body">
+    <div class="layui-btn-container">
+      <button type="button" class="layui-btn" id="selectFile"><i class="layui-icon"></i>上传文件</button>
+    </div>
     <table class="layui-hide" id="test"></table>
   </div>
+
+  <script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+  </script>
+
     <div id="page"></div>
 
   <!-- <div class="layui-footer"> -->
@@ -70,15 +79,16 @@
    <!--  底部固定区域
   </div> -->
 </div>
+
 <script>
 //JS
-layui.use(['element', 'layer', 'util','table','laypage'], function(){
+layui.use(['upload','element', 'layer', 'util','table','laypage'], function(){
   var element = layui.element
   ,layer = layui.layer
   ,util = layui.util
   ,$ = layui.$
   ,laypage = layui.laypage
-
+  ,upload = layui.upload
   var table = layui.table;
 
   table.render({
@@ -89,7 +99,6 @@ layui.use(['element', 'layer', 'util','table','laypage'], function(){
     , request: {
         pageName: 'pageNum' //页码的参数名称，默认：page
         ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
-
     }
     ,cols: [[ //标题栏
       {type: 'checkbox', LAY_CHECKED: true},
@@ -98,7 +107,8 @@ layui.use(['element', 'layer', 'util','table','laypage'], function(){
       {field: 'text', title: '文本',sort: true},
       {field: 'entity', title: '实体',sort: true},
       {field: 'entity_kb', title: '实体kb',sort: true},
-      {field: 'data', title: '数据',sort: true}
+      {field: 'data', title: '数据',sort: true},
+      {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
     ]]
     ,skin: 'line' //表格风格
     ,toolbar: 'default'
@@ -127,6 +137,42 @@ layui.use(['element', 'layer', 'util','table','laypage'], function(){
         layer.msg('编辑');
       break;
     };
+  });
+
+  //头工具栏事件
+  table.on('toolbar(test)', function(obj){
+    var checkStatus = table.checkStatus(obj.config.id);
+    switch(obj.event){
+      case 'getCheckData':
+        var data = checkStatus.data;
+        layer.alert(JSON.stringify(data));
+      break;
+      case 'getCheckLength':
+        var data = checkStatus.data;
+        layer.msg('选中了：'+ data.length + ' 个');
+      break;
+      case 'isAll':
+        layer.msg(checkStatus.isAll ? '全选': '未全选');
+      break;
+      
+      //自定义头工具栏右侧图标 - 提示
+      case 'LAYTABLE_TIPS':
+        layer.alert('这是工具栏右侧自定义的一个图标按钮');
+      break;
+    };
+  });
+
+  //指定允许上传的文件类型
+  upload.render({
+    elem: '#selectFile'
+    ,url: 'http://172.20.137.106:33004/test/getTable' //此处配置你自己的上传接口即可
+    ,accept: 'file' //普通文件
+    ,exts: 'xlsx'
+    ,field: "trainingset"
+    ,done: function(res){
+      layer.msg('上传成功');
+      console.log(res);
+    }
   });
 
   //头部事件

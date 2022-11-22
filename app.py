@@ -29,9 +29,8 @@ def ShowData():
         }
         data_list.append(datas)
     info = {"code": 0, "message": "OK", "total": len(data_list), "data": data_list[(pageNum - 1) * pageSize:pageNum * pageSize]}
-    print(info)
+    # print(info)
     return info
-
 
 if __name__ == '__main__':
     app.run(debug=True,)
