@@ -1,0 +1,4 @@
+1. 正确的pwd
+2.git add .
+3.git commit -m 'XXXXXXX'
+4.git push origin master
