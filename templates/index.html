@@ -11,6 +11,13 @@
           width: 270px;
           margin-right: 10px;
       }
+      #selectFile{
+        width: 26px;
+        height: 26px;
+        margin-right: 10px;
+        background:transparent; 
+        border: 1px solid #ccc
+      }
     </style>
     <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.1.3/axios.min.js"></script>
 </head>
@@ -69,16 +76,14 @@
   </div>
 
   <div class="layui-body">
-    <div class="layui-btn-container">
-      <button type="button" class="layui-btn" id="selectFile"><i class="layui-icon"></i>上传文件</button>
-    </div>
-    <table class="layui-hide" id="test"></table>
+      <!-- <button type="button" id="selectFile"><i class="layui-icon"></i></button> -->
+      <table class="layui-hide" id="test"></table>
   </div>
 
   <div id="add-main" style="display: none;">
     <div class="my-form">
       <br/>
-        <form class="layui-form" action="/data/add" method="POST" lay-skin="line">
+        <form class="layui-form" action="/data/add1" method="POST" lay-skin="line">
             <div class="layui-form-item my-form-item">
                 <label class="layui-form-label layui-icon">段序号</label>
                 <div class="layui-input-inline">
@@ -127,6 +132,13 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
   </script>
 
+  <script type="text/html" id="toolbarDemo">
+    <div class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div>
+    <!-- <div class="layui-inline" lay-event="update"><i class="layui-icon layui-icon-edit"></i></div> -->
+    <!-- <div class="layui-inline" lay-event="delete"><i class="layui-icon layui-icon-delete"></i></div> -->
+    <button class="layui-inline" type="button" id="selectFile"><i class="layui-icon"></i></button>
+  </script>
+
   <div id="page"></div>
 
   <!-- <div class="layui-footer"> -->
@@ -168,7 +180,7 @@ layui.use(['upload','element', 'layer', 'util','table','laypage'], function(){
       {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
     ]]
     ,skin: 'line' //表格风格
-    ,toolbar: 'default'
+    ,toolbar: '#toolbarDemo'//'default'
     ,parseData: function(res){ //将原始数据解析成 table 组件所规定的数据
       return {
         "code": res.code, //解析接口状态
@@ -191,7 +203,8 @@ layui.use(['upload','element', 'layer', 'util','table','laypage'], function(){
                 type: 1,
                 btnAlign: 'c',
                 area: ['400px', '400px'],
-                content: $("#add-main").html()
+                content: $("#add-main").html(),
+                dataType: "json"
                 //未做的是去监听表单提交，给后台发送ajax请求
             }
         )

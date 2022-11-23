@@ -47,6 +47,12 @@ def addData():
         # add(user_db)
     return render_template("index.html")
 
+@app.route('/data/add1',methods=["POST"])
+def addData1():
+    # text_id=1&text=1&entity=1&entity_kb=1&data=1
+    
+    return render_template("index.html")
+
 if __name__ == '__main__':
     app.run(debug=True,)
     # db.create_all()
