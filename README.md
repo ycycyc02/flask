@@ -3,4 +3,4 @@
 #启动命令
 python app.py
 
-#在启动前可能先需要安装flask
+#在启动前可能需要先安装flask
