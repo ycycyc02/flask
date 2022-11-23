@@ -17,14 +17,16 @@ class User(Base):
     entity = Column(String(300))
     entity_kb = Column(String(300))
     data = Column(String(300))
+    # predicate = Column(String(300))
+    # object = Column(String(300))
 
-    def __init__(self,name,age):
+    def __init__(self,auto_increment_id,segment_id,text,entity,entity_kb,data):
         self.auto_increment_id = auto_increment_id
         self.segment_id = segment_id
         self.text = text
         self.entity = entity
         self.entity_kb = entity_kb
-        self.data = data
+        self.data= data
     def __str__(self):
         info = {
             "auto_increment_id": self.auto_increment_id,

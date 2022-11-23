@@ -5,6 +5,14 @@
     <title>Title</title>
     <script src="/static/layui.js"></script>
     <link rel="stylesheet" href="/static/css/layui.css">
+    <style>
+      .layui-form-item .layui-input-inline {
+          float: left;
+          width: 270px;
+          margin-right: 10px;
+      }
+    </style>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.1.3/axios.min.js"></script>
 </head>
 <body>
 <div class="layui-layout layui-layout-admin">
@@ -67,12 +75,59 @@
     <table class="layui-hide" id="test"></table>
   </div>
 
+  <div id="add-main" style="display: none;">
+    <div class="my-form">
+      <br/>
+        <form class="layui-form" action="/data/add" method="POST" lay-skin="line">
+            <div class="layui-form-item my-form-item">
+                <label class="layui-form-label layui-icon">段序号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="text_id" lay-verify="required" placeholder="请输入段序号" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item my-form-item">
+                <label class="layui-form-label layui-icon">原始文本</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="text" lay-verify="required" placeholder="请输入原始文本" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item my-form-item">
+                <label class="layui-form-label layui-icon">文本实体</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="entity" lay-verify="required" placeholder="请输入文本实体" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item my-form-item">
+                <label class="layui-form-label layui-icon">知识库实体</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="entity_kb" lay-verify="required" placeholder="请输入知识库实体" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item my-form-item">
+                <label class="layui-form-label layui-icon">数据</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="data" lay-verify="required" placeholder="请输入数据" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item my-form-item">
+                <div class="layui-input-block item">
+                    <button class="layui-btn" lay-submit="" lay-filter="demo1" id="submit1">保存</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+  </div>
+
   <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
   </script>
 
-    <div id="page"></div>
+  <div id="page"></div>
 
   <!-- <div class="layui-footer"> -->
     <!-- 底部固定区域 -->
@@ -102,12 +157,14 @@ layui.use(['upload','element', 'layer', 'util','table','laypage'], function(){
     }
     ,cols: [[ //标题栏
       {type: 'checkbox', LAY_CHECKED: true},
-      {field: 'auto_increment_id', title: 'ID', sort: true},
-      {field: 'segment_id', title: '用户名',sort: true},
+      // {field: 'auto_increment_id', title: 'ID', sort: true},
+      {field: 'segment_id', title: '文本id',sort: true},
       {field: 'text', title: '文本',sort: true},
       {field: 'entity', title: '实体',sort: true},
       {field: 'entity_kb', title: '实体kb',sort: true},
       {field: 'data', title: '数据',sort: true},
+      // {field: 'predicate', title: '谓语',sort: true},
+      // {field: 'object', title: '内容',sort: true},
       {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
     ]]
     ,skin: 'line' //表格风格
@@ -128,36 +185,23 @@ layui.use(['upload','element', 'layer', 'util','table','laypage'], function(){
     var checkStatus = table.checkStatus(obj.config.id);
     switch(obj.event){
       case 'add':
-        layer.msg('添加');
+        layer.open({
+                title: '添加数据',
+                /*如果是外部的html，type2，内部，type1*/
+                type: 1,
+                btnAlign: 'c',
+                area: ['400px', '400px'],
+                content: $("#add-main").html()
+                //未做的是去监听表单提交，给后台发送ajax请求
+            }
+        )
+        ;
       break;
       case 'delete':
         layer.msg('删除');
       break;
       case 'update':
         layer.msg('编辑');
-      break;
-    };
-  });
-
-  //头工具栏事件
-  table.on('toolbar(test)', function(obj){
-    var checkStatus = table.checkStatus(obj.config.id);
-    switch(obj.event){
-      case 'getCheckData':
-        var data = checkStatus.data;
-        layer.alert(JSON.stringify(data));
-      break;
-      case 'getCheckLength':
-        var data = checkStatus.data;
-        layer.msg('选中了：'+ data.length + ' 个');
-      break;
-      case 'isAll':
-        layer.msg(checkStatus.isAll ? '全选': '未全选');
-      break;
-      
-      //自定义头工具栏右侧图标 - 提示
-      case 'LAYTABLE_TIPS':
-        layer.alert('这是工具栏右侧自定义的一个图标按钮');
       break;
     };
   });
@@ -171,7 +215,14 @@ layui.use(['upload','element', 'layer', 'util','table','laypage'], function(){
     ,field: "trainingset"
     ,done: function(res){
       layer.msg('上传成功');
-      console.log(res);
+      // console.log(res.data[0]);
+      axios({
+        method: 'POST',
+        url:'/data/add',
+        data:res.data
+      }).then(response=>{
+          console.log(response)
+      })  
     }
   });
 
